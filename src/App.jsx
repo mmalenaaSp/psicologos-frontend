@@ -1,20 +1,7 @@
-import './App.css'
+import TipoSesionPage from './components/TipoSesionPage';
 
 function App() {
-  return (
-    <div className="app">
-      <h1>Sistema de Psicólogos</h1>
-
-      <p>
-        Gestión de turnos para pacientes y profesionales
-      </p>
-
-      <div>
-        <button>Ingresar</button>
-        <button>Registrarse</button>
-      </div>
-    </div>
-  )
+  return <TipoSesionPage />;
 }
 
-export default App
+export default App;
