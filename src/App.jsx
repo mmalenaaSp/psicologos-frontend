@@ -1,3 +1,4 @@
+import Pacientes from './pages/Pacientes';
 import './App.css'
 
 function App() {
@@ -13,7 +14,9 @@ function App() {
         <button>Ingresar</button>
         <button>Registrarse</button>
       </div>
+      <Pacientes />
     </div>
+    
   )
 }
 
