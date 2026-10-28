@@ -1,4 +1,7 @@
+import './Pacientes.css';
+
 import { useEffect, useState } from 'react';
+
 import {
   obtenerPacientes,
   darDeBajaPaciente
@@ -6,20 +9,24 @@ import {
 
 import FormularioPaciente from '../components/FormularioPaciente';
 import FormularioEditarPaciente from '../components/FormularioEditarPaciente';
+import Modal from '../components/Modal';
 
 function Pacientes() {
   const [pacientes, setPacientes] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
 
+  // Estados de la interfaz
+  const [mostrarAlta, setMostrarAlta] = useState(false);
   const [pacienteEnEdicion, setPacienteEnEdicion] = useState(null);
+  const [busqueda, setBusqueda] = useState('');
 
-  // Estados para la baja de pacientes
+  // Estados para operaciones
   const [eliminandoId, setEliminandoId] = useState(null);
   const [errorBaja, setErrorBaja] = useState('');
-  const [mensajeBaja, setMensajeBaja] = useState('');
+  const [mensajeOperacion, setMensajeOperacion] = useState('');
 
-  // READ: Obtener pacientes al cargar la pantalla
+  // READ: Obtener pacientes
   useEffect(() => {
     const controller = new AbortController();
 
@@ -43,20 +50,34 @@ function Pacientes() {
     return () => controller.abort();
   }, []);
 
-  // CREATE: Agregar el paciente al listado
+  // CREATE: Abrir formulario de alta
+  const abrirAlta = () => {
+    setPacienteEnEdicion(null);
+    setMensajeOperacion('');
+    setErrorBaja('');
+    setMostrarAlta(true);
+  };
+
+  // CREATE: Agregar paciente al listado
   const agregarPaciente = (nuevoPaciente) => {
     setPacientes((anteriores) => [
       ...anteriores,
       nuevoPaciente
     ]);
+
+    setMostrarAlta(false);
+    setMensajeOperacion('Paciente registrado correctamente');
   };
 
-  // Seleccionar paciente para editar
+  // UPDATE: Seleccionar paciente
   const seleccionarPaciente = (paciente) => {
+    setMostrarAlta(false);
+    setMensajeOperacion('');
+    setErrorBaja('');
     setPacienteEnEdicion(paciente);
   };
 
-  // UPDATE: Actualizar los datos del paciente en el listado
+  // UPDATE: Reflejar cambios en el listado
   const guardarPacienteActualizado = (pacienteActualizado) => {
     setPacientes((anteriores) =>
       anteriores.map((paciente) =>
@@ -67,139 +88,208 @@ function Pacientes() {
     );
 
     setPacienteEnEdicion(null);
-  };
-
-  // Cancelar edición
-  const cancelarEdicion = () => {
-    setPacienteEnEdicion(null);
+    setMensajeOperacion('Paciente actualizado correctamente');
   };
 
   // DELETE: Dar de baja un paciente
   const confirmarBaja = async (paciente) => {
     if (eliminandoId !== null) return;
 
-    // 1. Solicitar confirmación
     const confirmado = window.confirm(
       `¿Querés dar de baja a ${paciente.nombre} ${paciente.apellido}?\n\n` +
       'El paciente dejará de aparecer en el listado.'
     );
 
-    // Si el usuario cancela, no hacemos nada
     if (!confirmado) return;
 
     setEliminandoId(paciente.id);
     setErrorBaja('');
-    setMensajeBaja('');
+    setMensajeOperacion('');
 
     try {
-      // 2. Enviar DELETE al backend
       await darDeBajaPaciente(paciente.id);
 
-      // 3. Quitar el paciente del listado
       setPacientes((anteriores) =>
         anteriores.filter(
           (item) => item.id !== paciente.id
         )
       );
 
-      // 4. Cerrar edición si estaba seleccionado
       setPacienteEnEdicion((anterior) =>
         anterior?.id === paciente.id ? null : anterior
       );
 
-      // 5. Mostrar confirmación
-      setMensajeBaja(
-        'Paciente dado de baja correctamente'
-      );
+      setMensajeOperacion('Paciente dado de baja correctamente');
 
     } catch (err) {
       setErrorBaja(err.message);
-
     } finally {
       setEliminandoId(null);
     }
   };
 
+  // BÚSQUEDA: Filtrar pacientes por nombre, apellido o DNI
+  const termino = busqueda.trim().toLocaleLowerCase('es');
+
+  const pacientesFiltrados = pacientes.filter((paciente) => {
+    const nombreCompleto =
+      `${paciente.nombre} ${paciente.apellido}`;
+
+    return [
+      paciente.nombre,
+      paciente.apellido,
+      nombreCompleto,
+      paciente.dni
+    ].some((valor) =>
+      String(valor ?? '')
+        .toLocaleLowerCase('es')
+        .includes(termino)
+    );
+  });
+
   return (
-    <section>
-      <h2>Gestión de Pacientes</h2>
+    <section className="pacientes-page">
 
-      {/* CREATE */}
-      <FormularioPaciente onCreado={agregarPaciente} />
+      {/* ENCABEZADO */}
+      <div className="pacientes-encabezado">
+        <div>
+          <h2>Gestión de Pacientes</h2>
+          <p>Administrá y consultá tus pacientes registrados.</p>
+        </div>
 
-      {/* UPDATE */}
-      {pacienteEnEdicion && (
-        <FormularioEditarPaciente
-          key={pacienteEnEdicion.id}
-          paciente={pacienteEnEdicion}
-          onGuardado={guardarPacienteActualizado}
-          onCancelar={cancelarEdicion}
-        />
-      )}
+        <button
+          type="button"
+          className="pacientes-nuevo"
+          onClick={abrirAlta}
+        >
+          + Nuevo paciente
+        </button>
+      </div>
 
-      {/* Mensajes de la baja */}
-      {mensajeBaja && (
-        <p role="status">{mensajeBaja}</p>
+      {/* MENSAJES */}
+      {mensajeOperacion && (
+        <p className="pacientes-mensaje" role="status">
+          {mensajeOperacion}
+        </p>
       )}
 
       {errorBaja && (
-        <p role="alert">{errorBaja}</p>
+        <p className="pacientes-error" role="alert">
+          {errorBaja}
+        </p>
       )}
 
-      {/* Estados del listado */}
-      {cargando && <p>Cargando pacientes...</p>}
+      {/* PANEL PRINCIPAL */}
+      <div className="pacientes-panel">
 
-      {error && <p role="alert">{error}</p>}
+        <div className="pacientes-toolbar">
+          <label htmlFor="buscar-paciente">
+            Buscar paciente
+          </label>
 
-      {!cargando && !error && pacientes.length === 0 && (
-        <p>No hay pacientes activos registrados.</p>
+          <input
+            id="buscar-paciente"
+            type="search"
+            placeholder="Buscar por nombre, apellido o DNI..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+        </div>
+
+        {cargando && <p>Cargando pacientes...</p>}
+
+        {error && <p role="alert">{error}</p>}
+
+        {!cargando && !error && pacientes.length === 0 && (
+          <p className="pacientes-vacio">
+            No hay pacientes activos registrados.
+          </p>
+        )}
+
+        {!cargando &&
+          !error &&
+          pacientes.length > 0 &&
+          pacientesFiltrados.length === 0 && (
+            <p className="pacientes-vacio">
+              No se encontraron pacientes con esa búsqueda.
+            </p>
+          )}
+
+        {!cargando &&
+          !error &&
+          pacientesFiltrados.length > 0 && (
+            <div className="pacientes-tabla-contenedor">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {pacientesFiltrados.map((paciente) => (
+                    <tr key={paciente.id}>
+                      <td>{paciente.nombre}</td>
+                      <td>{paciente.apellido}</td>
+                      <td>{paciente.dni}</td>
+                      <td>{paciente.telefono}</td>
+
+                      <td>
+                        <button
+                          type="button"
+                          onClick={() => seleccionarPaciente(paciente)}
+                          disabled={eliminandoId !== null}
+                        >
+                          Editar
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => confirmarBaja(paciente)}
+                          disabled={eliminandoId !== null}
+                        >
+                          {eliminandoId === paciente.id
+                            ? 'Dando de baja...'
+                            : 'Dar de baja'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+      </div>
+
+      {/* MODAL: REGISTRAR */}
+      {mostrarAlta && (
+        <Modal
+          titulo="Registrar nuevo paciente"
+          onCerrar={() => setMostrarAlta(false)}
+        >
+          <FormularioPaciente onCreado={agregarPaciente} />
+        </Modal>
       )}
 
-      {/* READ */}
-      {!cargando && !error && pacientes.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>DNI</th>
-              <th>Teléfono</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {pacientes.map((paciente) => (
-              <tr key={paciente.id}>
-                <td>{paciente.nombre}</td>
-                <td>{paciente.apellido}</td>
-                <td>{paciente.dni}</td>
-                <td>{paciente.telefono}</td>
-
-                <td>
-                  <button
-                    type="button"
-                    onClick={() => seleccionarPaciente(paciente)}
-                    disabled={eliminandoId !== null}
-                  >
-                    Editar
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => confirmarBaja(paciente)}
-                    disabled={eliminandoId !== null}
-                  >
-                    {eliminandoId === paciente.id
-                      ? 'Dando de baja...'
-                      : 'Dar de baja'}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* MODAL: EDITAR */}
+      {pacienteEnEdicion && (
+        <Modal
+          titulo="Editar paciente"
+          onCerrar={() => setPacienteEnEdicion(null)}
+        >
+          <FormularioEditarPaciente
+            key={pacienteEnEdicion.id}
+            paciente={pacienteEnEdicion}
+            onGuardado={guardarPacienteActualizado}
+            onCancelar={() => setPacienteEnEdicion(null)}
+          />
+        </Modal>
       )}
+
     </section>
   );
 }

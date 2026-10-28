@@ -1,0 +1,233 @@
+.pacientes-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pacientes-page h2 {
+  color: var(--color-primary-dark);
+  font-family: var(--font-heading);
+  font-size: 30px;
+}
+
+.pacientes-page form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 28px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.pacientes-page form h3 {
+  grid-column: 1 / -1;
+}
+
+.pacientes-page form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pacientes-page form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.pacientes-page button {
+  padding: 12px 16px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.pacientes-page table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+}
+
+.pacientes-page th,
+.pacientes-page td {
+  padding: 14px;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+/* Encabezado */
+
+.pacientes-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.pacientes-encabezado h2 {
+  font-family: var(--font-heading);
+  font-size: 30px;
+  color: var(--color-primary-dark);
+  margin: 0 0 8px;
+}
+
+.pacientes-encabezado p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* Botón Nuevo paciente */
+
+.pacientes-page .pacientes-nuevo {
+  padding: 13px 20px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pacientes-page .pacientes-nuevo:hover {
+  filter: brightness(0.92);
+}
+
+/* Panel de pacientes */
+
+.pacientes-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  min-width: 0;
+}
+
+.pacientes-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+  max-width: 440px;
+}
+
+.pacientes-toolbar label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.pacientes-toolbar input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  background: white;
+}
+
+.pacientes-toolbar input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Tabla */
+
+.pacientes-tabla-contenedor {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.pacientes-tabla-contenedor table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+}
+
+.pacientes-tabla-contenedor th {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+.pacientes-tabla-contenedor td,
+.pacientes-tabla-contenedor th {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pacientes-tabla-contenedor tr:hover td {
+  background: #F8FBFA;
+}
+
+/* Mensajes */
+
+.pacientes-mensaje {
+  background: #E7F4EF;
+  color: var(--color-success);
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+}
+
+.pacientes-error {
+  background: #FBEDEF;
+  color: var(--color-danger);
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+}
+
+.pacientes-vacio {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 36px 16px;
+}
+
+/* Estilos específicos de formularios en modal */
+
+.pacientes-page .pg-modal form {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 22px 0 0;
+}
+
+.pacientes-page .pg-modal form h3 {
+  display: none;
+}
+
+.pacientes-page .pg-modal form > button {
+  grid-column: 1 / -1;
+  width: 100%;
+  justify-self: stretch;
+}
+
+.pacientes-page .pg-modal form > button[type="button"] {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+  .pacientes-encabezado {
+    align-items: flex-start;
+  }
+
+  .pacientes-panel {
+    padding: 16px;
+  }
+
+  .pacientes-encabezado h2 {
+    font-size: 25px;
+  }
+}
