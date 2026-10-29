@@ -1,0 +1,140 @@
+/* Ventanas modales de PsycoGest */
+
+.pg-modal {
+  width: min(580px, calc(100% - 32px));
+  max-height: 90vh;
+  padding: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 24px 70px rgba(23, 62, 73, 0.2);
+  overflow-y: auto;
+}
+
+.pg-modal::backdrop {
+  background: rgba(15, 36, 43, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+/* Encabezado */
+
+.pg-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pg-modal__header h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 22px;
+  color: var(--color-primary-dark);
+}
+
+.pg-modal .pg-modal__cerrar {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.pg-modal .pg-modal__cerrar:hover {
+  background: var(--color-border);
+}
+
+/* Formularios */
+
+.pg-modal form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 22px 0 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* El título ya está en el encabezado del modal */
+.pg-modal form h3 {
+  display: none;
+}
+
+.pg-modal form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.pg-modal form input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--color-text);
+}
+
+.pg-modal form input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.pg-modal form > button {
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 13px 18px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.pg-modal form > button[type="submit"] {
+  background: var(--color-primary);
+  color: white;
+}
+
+.pg-modal form > button[type="button"] {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.pg-modal form > button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pg-modal form > p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.pg-modal [role="alert"] {
+  color: var(--color-danger);
+}
+
+/* Adaptación a celulares */
+
+@media (max-width: 600px) {
+  .pg-modal {
+    padding: 20px;
+  }
+
+  .pg-modal form {
+    grid-template-columns: 1fr;
+  }
+}
