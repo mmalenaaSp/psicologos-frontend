@@ -1,8 +1,9 @@
 import { useState } from 'react';
-
 import Pacientes from './pages/Pacientes';
 import Psicologos from './pages/Psicologos';
-
+import TipoSesionPage from './components/TipoSesionPage';
+import LugarPage from './components/LugarPage';
+import './App.css';
 import './styles/layout.css';
 
 function App() {
@@ -58,6 +59,28 @@ function App() {
             Psicólogos
           </button>
 
+          <button
+              type="button"
+              className={`pg-nav-item ${
+                pantallaActual === 'tipos-sesion' ? 'pg-nav-active' : ''
+              }`}
+              aria-current={pantallaActual === 'tipos-sesion' ? 'page' : undefined}
+              onClick={() => setPantallaActual('tipos-sesion')}
+            >
+              Tipos de sesión
+            </button>
+
+            <button
+              type="button"
+              className={`pg-nav-item ${
+                pantallaActual === 'lugares' ? 'pg-nav-active' : ''
+              }`}
+              aria-current={pantallaActual === 'lugares' ? 'page' : undefined}
+              onClick={() => setPantallaActual('lugares')}
+            >
+              Lugares
+            </button>
+
           {/* PRÓXIMAS FUNCIONALIDADES */}
           <span className="pg-nav-item pg-nav-disabled">
             Turnos · Próximamente
@@ -92,6 +115,14 @@ function App() {
 
           {pantallaActual === 'psicologos' && (
             <Psicologos />
+          )}
+
+          {pantallaActual === 'tipos-sesion' && (
+            <TipoSesionPage />
+          )}
+
+          {pantallaActual === 'lugares' && (
+            <LugarPage />
           )}
 
         </main>

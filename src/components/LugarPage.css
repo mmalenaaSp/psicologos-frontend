@@ -1,0 +1,527 @@
+.lugar-page {
+  --lugar-ink: #173E49;
+  --lugar-muted: #647780;
+  --lugar-line: #D8E5E2;
+  --lugar-purple: #16777C;
+  --lugar-purple-dark: #12595E;
+  --lugar-purple-soft: #DDEDE8;
+  --lugar-red: #a63f50;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 90% 0%, #DDEDE8 0, transparent 35rem), #F7F9F8;
+  color: var(--lugar-ink);
+  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+}
+
+.lugar-topbar {
+  min-height: 68px;
+  padding: 0 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--lugar-line);
+  background: rgb(255 255 255 / 88%);
+}
+
+.lugar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--lugar-ink);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.lugar-brand-mark {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--lugar-purple);
+  color: white;
+}
+
+.lugar-topbar-label,
+.lugar-description,
+.lugar-detail-subtitle {
+  color: var(--lugar-muted);
+  font-size: 0.86rem;
+}
+
+.lugar-content {
+  width: min(1120px, 100% - 32px);
+  margin: 0 auto;
+  padding: 34px 0 52px;
+}
+
+.lugar-heading {
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.lugar-eyebrow {
+  margin: 0 0 8px;
+  color: var(--lugar-purple);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.lugar-heading h1,
+.lugar-detail-panel h2,
+.lugar-modal-heading h2 {
+  margin: 0;
+  color: var(--lugar-ink);
+  letter-spacing: -0.045em;
+}
+
+.lugar-heading h1 {
+  font-size: clamp(1.8rem, 7vw, 2.35rem);
+  line-height: 1.12;
+}
+
+.lugar-description {
+  margin: 9px 0 0;
+}
+
+.lugar-button {
+  min-height: 42px;
+  padding: 0 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.lugar-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.lugar-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.lugar-button-primary {
+  background: var(--lugar-purple);
+  color: white;
+  box-shadow: 0 8px 18px rgb(104 84 200 / 20%);
+}
+
+.lugar-button-primary:hover:not(:disabled) {
+  background: var(--lugar-purple-dark);
+}
+
+.lugar-button-secondary {
+  border-color: var(--lugar-line);
+  background: white;
+  color: var(--lugar-ink);
+}
+
+.lugar-button-danger {
+  border-color: #f0d2d7;
+  background: #fff0f2;
+  color: var(--lugar-red);
+}
+
+.lugar-notice {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 0.88rem;
+}
+
+.lugar-notice-error {
+  border-color: #f1c8ce;
+  background: #fff0f1;
+  color: #943444;
+}
+
+.lugar-notice-success {
+  border-color: #c8e8d7;
+  background: #eaf7f0;
+  color: #26755c;
+}
+
+.lugar-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.lugar-panel {
+  min-width: 0;
+  border: 1px solid var(--lugar-line);
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 5px 18px rgb(39 35 58 / 3%);
+}
+
+.lugar-list-panel {
+  padding: 17px 15px 12px;
+}
+
+.lugar-panel-heading {
+  margin-bottom: 17px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lugar-panel-heading h2 {
+  margin: 0;
+  color: var(--lugar-ink);
+  font-size: 1rem;
+}
+
+.lugar-panel-heading p {
+  margin: 4px 0 0;
+  color: var(--lugar-muted);
+  font-size: 0.78rem;
+}
+
+.lugar-icon-button {
+  width: 35px;
+  height: 35px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--lugar-line);
+  border-radius: 9px;
+  background: white;
+  color: var(--lugar-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.lugar-search {
+  min-height: 42px;
+  padding: 0 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--lugar-line);
+  border-radius: 10px;
+  color: #76888B;
+}
+
+.lugar-search > span:not(.lugar-sr-only) {
+  font-size: 1.35rem;
+}
+
+.lugar-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--lugar-ink);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.lugar-list {
+  max-height: 430px;
+  margin: 10px -5px 0;
+  padding: 0 5px;
+  overflow: auto;
+  list-style: none;
+}
+
+.lugar-list li + li {
+  border-top: 1px solid #E4EEEB;
+}
+
+.lugar-row {
+  width: 100%;
+  padding: 12px 8px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--lugar-ink);
+  text-align: left;
+}
+
+.lugar-row:hover,
+.lugar-row.is-selected {
+  background: #EDF5F2;
+}
+
+.lugar-avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--lugar-purple-soft);
+  color: var(--lugar-purple-dark);
+  font-weight: 800;
+}
+
+.lugar-row-copy {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 3px;
+}
+
+.lugar-row-copy strong,
+.lugar-row-copy span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lugar-row-copy strong {
+  font-size: 0.86rem;
+}
+
+.lugar-row-copy span {
+  color: var(--lugar-muted);
+  font-size: 0.77rem;
+}
+
+.lugar-chevron {
+  color: #819294;
+  font-size: 1.45rem;
+}
+
+.lugar-empty {
+  min-height: 140px;
+  padding: 24px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--lugar-muted);
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.lugar-empty strong {
+  color: var(--lugar-ink);
+}
+
+.lugar-empty-icon {
+  color: #5C9A98;
+  font-size: 1.7rem;
+}
+
+.lugar-detail-panel {
+  min-height: 300px;
+  padding: 21px 19px;
+}
+
+.lugar-detail-icon,
+.lugar-detail-empty-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--lugar-purple-soft);
+  color: var(--lugar-purple);
+  font-size: 1.5rem;
+}
+
+.lugar-detail-panel h2 {
+  font-size: 1.45rem;
+  line-height: 1.2;
+}
+
+.lugar-detail-subtitle {
+  margin: 7px 0 0;
+}
+
+.lugar-fields {
+  margin: 23px 0 0;
+  border-top: 1px solid var(--lugar-line);
+}
+
+.lugar-fields div {
+  padding: 12px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--lugar-line);
+  font-size: 0.83rem;
+}
+
+.lugar-fields dt {
+  color: var(--lugar-muted);
+}
+
+.lugar-fields dd {
+  margin: 0;
+  color: var(--lugar-ink);
+  font-weight: 650;
+  text-align: right;
+}
+
+.lugar-actions,
+.lugar-form-actions {
+  margin-top: 19px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.lugar-detail-empty {
+  min-height: 255px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.lugar-detail-empty-icon {
+  margin-bottom: 14px;
+}
+
+.lugar-detail-empty h2 {
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.lugar-detail-empty p {
+  max-width: 260px;
+  margin: 7px 0 0;
+  color: var(--lugar-muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.lugar-modal-backdrop {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  padding: 16px;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  background: rgb(34 29 54 / 42%);
+}
+
+.lugar-modal-card {
+  width: min(100%, 480px);
+  padding: 21px;
+  border-radius: 17px;
+  background: white;
+  box-shadow: 0 18px 50px rgb(39 35 58 / 16%);
+}
+
+.lugar-modal-heading {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lugar-modal-heading h2 {
+  font-size: 1.35rem;
+}
+
+.lugar-form {
+  display: grid;
+  gap: 15px;
+}
+
+.lugar-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--lugar-ink);
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.lugar-form input {
+  width: 100%;
+  min-height: 43px;
+  padding: 0 11px;
+  border: 1px solid var(--lugar-line);
+  border-radius: 9px;
+  color: var(--lugar-ink);
+  font: inherit;
+  font-weight: 400;
+}
+
+.lugar-form input:focus-visible,
+.lugar-search input:focus-visible,
+.lugar-button:focus-visible,
+.lugar-row:focus-visible,
+.lugar-icon-button:focus-visible {
+  outline: 3px solid #16777C;
+  outline-offset: 2px;
+}
+
+.lugar-form-actions {
+  justify-content: flex-end;
+}
+
+.lugar-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 640px) {
+  .lugar-content {
+    width: min(1120px, 100% - 48px);
+    padding-top: 46px;
+  }
+
+  .lugar-heading {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 29px;
+  }
+
+  .lugar-list-panel {
+    padding: 20px 19px 13px;
+  }
+
+  .lugar-detail-panel {
+    padding: 24px;
+  }
+}
+
+@media (min-width: 900px) {
+  .lugar-topbar {
+    padding-inline: max(5vw, calc((100vw - 1120px) / 2));
+  }
+
+  .lugar-layout {
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    gap: 20px;
+  }
+
+  .lugar-detail-panel {
+    min-height: 430px;
+  }
+}
