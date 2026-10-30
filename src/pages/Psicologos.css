@@ -252,3 +252,62 @@
   grid-column: 1 / -1;
   width: 100%;
 }
+
+/* Botones de la tabla */
+
+.psicologos-acciones-tabla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.psicologos-page .psicologos-baja {
+  padding: 10px 14px;
+  background: #FBEDEF;
+  color: var(--color-danger);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.psicologos-page .psicologos-baja:hover:not(:disabled) {
+  background: #F4DADD;
+}
+
+.psicologos-page .psicologos-baja:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.psicologos-page button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+/* Formulario de edición */
+
+.psicologos-page .psicologos-formulario label {
+  min-width: 0;
+}
+
+.psicologos-page .psicologos-formulario .psicologos-campo-completo {
+  grid-column: 1 / -1;
+}
+
+.psicologos-page .psicologos-formulario > button {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* El texto no debe desbordar las celdas */
+
+.psicologos-tabla-contenedor td {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .psicologos-page .psicologos-formulario .psicologos-campo-completo {
+    grid-column: 1;
+  }
+}

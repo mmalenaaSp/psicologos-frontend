@@ -3,36 +3,43 @@ import './Psicologos.css';
 
 import { useEffect, useState } from 'react';
 
-import { obtenerPsicologos } from '../services/psicologoService';
+import {
+  obtenerPsicologos,
+  darDeBajaPsicologo
+} from '../services/psicologoService';
 
 import Modal from '../components/Modal';
 import FormularioPsicologo from '../components/FormularioPsicologo';
+import FormularioEditarPsicologo from '../components/FormularioEditarPsicologo';
 
 function Psicologos() {
 
   // ==========================================
-  // 1. ESTADOS
+  // ESTADOS
   // ==========================================
 
   const [psicologos, setPsicologos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
 
-  // Estados de la interfaz
   const [busqueda, setBusqueda] = useState('');
   const [seleccionado, setSeleccionado] = useState(null);
+
   const [mostrarAlta, setMostrarAlta] = useState(false);
-  const [mensajeAlta, setMensajeAlta] = useState('');
+  const [psicologoEnEdicion, setPsicologoEnEdicion] = useState(null);
+
+  const [mensaje, setMensaje] = useState('');
+  const [eliminandoId, setEliminandoId] = useState(null);
 
 
   // ==========================================
-  // 2. READ: CARGAR PSICÓLOGOS
+  // READ: CARGAR LISTADO
   // ==========================================
 
   useEffect(() => {
     const controller = new AbortController();
 
-    const cargarPsicologos = async () => {
+    const cargar = async () => {
       try {
         const datos = await obtenerPsicologos(controller.signal);
 
@@ -51,40 +58,28 @@ function Psicologos() {
       }
     };
 
-    cargarPsicologos();
+    cargar();
 
     return () => controller.abort();
   }, []);
 
 
   // ==========================================
-  // 3. CREATE: REGISTRAR PSICÓLOGO
+  // RECARGAR DESDE EL BACKEND
   // ==========================================
 
-  // Abrir el formulario de registro
-  const abrirAlta = () => {
-    setMensajeAlta('');
-    setMostrarAlta(true);
-  };
-
-  // Cerrar el formulario cuando termina el registro
-  const finalizarAlta = async () => {
-    setMostrarAlta(false);
-    setBusqueda('');
-    setMensajeAlta('Psicólogo registrado correctamente.');
-    setError('');
+  const recargarPsicologos = async () => {
     setCargando(true);
 
-    // Actualizar el listado desde el backend
     try {
       const datos = await obtenerPsicologos();
 
       setPsicologos(datos);
+      setError('');
 
     } catch (err) {
       setError(
-        'El registro se realizó, pero no se pudo actualizar el listado: ' +
-        err.message
+        'No se pudo actualizar el listado: ' + err.message
       );
 
     } finally {
@@ -94,7 +89,81 @@ function Psicologos() {
 
 
   // ==========================================
-  // 4. BÚSQUEDA DE PSICÓLOGOS
+  // CREATE: REGISTRAR
+  // ==========================================
+
+  const finalizarAlta = () => {
+    setMostrarAlta(false);
+    setBusqueda('');
+    setMensaje('Psicólogo registrado correctamente.');
+
+    recargarPsicologos();
+  };
+
+
+  // ==========================================
+  // UPDATE: EDITAR
+  // ==========================================
+
+  const seleccionarParaEditar = (psicologo) => {
+    setSeleccionado(null);
+    setMensaje('');
+    setError('');
+    setPsicologoEnEdicion(psicologo);
+  };
+
+  const finalizarEdicion = () => {
+    setPsicologoEnEdicion(null);
+    setBusqueda('');
+    setMensaje('Psicólogo actualizado correctamente.');
+
+    recargarPsicologos();
+  };
+
+
+  // ==========================================
+  // DELETE: DAR DE BAJA
+  // ==========================================
+
+  const confirmarBaja = async (psicologo) => {
+    if (eliminandoId !== null) return;
+
+    const confirmado = window.confirm(
+      `¿Querés dar de baja a ${psicologo.nombre} ${psicologo.apellido ?? ''}?\n\n` +
+      'El profesional dejará de aparecer en el listado.'
+    );
+
+    if (!confirmado) return;
+
+    setEliminandoId(psicologo.id);
+    setMensaje('');
+    setError('');
+
+    try {
+      await darDeBajaPsicologo(psicologo.id);
+
+      setPsicologos((anteriores) =>
+        anteriores.filter(
+          (item) => item.id !== psicologo.id
+        )
+      );
+
+      setSeleccionado(null);
+      setPsicologoEnEdicion(null);
+
+      setMensaje('Psicólogo dado de baja correctamente.');
+
+    } catch (err) {
+      setError(err.message);
+
+    } finally {
+      setEliminandoId(null);
+    }
+  };
+
+
+  // ==========================================
+  // BUSCADOR
   // ==========================================
 
   const termino = busqueda.trim().toLocaleLowerCase('es');
@@ -118,23 +187,20 @@ function Psicologos() {
 
 
   // ==========================================
-  // 5. INTERFAZ
+  // INTERFAZ
   // ==========================================
 
   return (
     <section className="psicologos-page">
 
-      {/* ======================================
-          ENCABEZADO
-          ====================================== */}
+      {/* ENCABEZADO */}
 
       <div className="psicologos-encabezado">
 
         <div>
           <h2>Gestión de Psicólogos</h2>
-
           <p>
-            Consultá los profesionales registrados en PsycoGest.
+            Administrá los profesionales registrados.
           </p>
         </div>
 
@@ -147,7 +213,11 @@ function Psicologos() {
           <button
             type="button"
             className="psicologos-nuevo"
-            onClick={abrirAlta}
+            onClick={() => {
+              setMensaje('');
+              setError('');
+              setMostrarAlta(true);
+            }}
           >
             + Nuevo psicólogo
           </button>
@@ -156,27 +226,20 @@ function Psicologos() {
       </div>
 
 
-      {/* ======================================
-          MENSAJES
-          ====================================== */}
+      {/* MENSAJES */}
 
-      {mensajeAlta && (
+      {mensaje && (
         <p className="psicologos-exito" role="status">
-          {mensajeAlta}
+          {mensaje}
         </p>
       )}
 
 
-      {/* ======================================
-          PANEL PRINCIPAL
-          ====================================== */}
+      {/* PANEL DE LISTADO */}
 
       <div className="psicologos-panel">
 
-        {/* BUSCADOR */}
-
         <div className="psicologos-toolbar">
-
           <label htmlFor="buscar-psicologo">
             Buscar profesional
           </label>
@@ -184,22 +247,15 @@ function Psicologos() {
           <input
             id="buscar-psicologo"
             type="search"
-            placeholder="Nombre, apellido, matrícula o email..."
             value={busqueda}
+            placeholder="Nombre, apellido, matrícula o email..."
             onChange={(e) => setBusqueda(e.target.value)}
           />
-
         </div>
-
-
-        {/* ESTADO DE CARGA */}
 
         {cargando && (
           <p>Cargando psicólogos...</p>
         )}
-
-
-        {/* ERRORES */}
 
         {error && (
           <p className="psicologos-error" role="alert">
@@ -207,53 +263,31 @@ function Psicologos() {
           </p>
         )}
 
-
-        {/* SIN PSICÓLOGOS REGISTRADOS */}
-
         {!cargando && !error && psicologos.length === 0 && (
           <div className="psicologos-vacio">
-
-            <h3>
-              Todavía no hay profesionales registrados
-            </h3>
-
-            <p>
-              Los psicólogos que se registren aparecerán acá.
-            </p>
-
+            <h3>Todavía no hay profesionales registrados</h3>
+            <p>Los nuevos profesionales aparecerán acá.</p>
           </div>
         )}
-
-
-        {/* SIN RESULTADOS DE BÚSQUEDA */}
 
         {!cargando &&
           !error &&
           psicologos.length > 0 &&
           psicologosFiltrados.length === 0 && (
-
             <div className="psicologos-vacio">
-
               <h3>No encontramos resultados</h3>
-
-              <p>
-                Probá con otro nombre o número de matrícula.
-              </p>
-
+              <p>Probá con otra búsqueda.</p>
             </div>
           )}
 
 
-        {/* ==================================
-            TABLA DE PSICÓLOGOS
-            ================================== */}
+        {/* TABLA */}
 
         {!cargando &&
           !error &&
           psicologosFiltrados.length > 0 && (
 
             <div className="psicologos-tabla-contenedor">
-
               <table>
 
                 <thead>
@@ -266,9 +300,7 @@ function Psicologos() {
                 </thead>
 
                 <tbody>
-
                   {psicologosFiltrados.map((psicologo) => (
-
                     <tr key={psicologo.id}>
 
                       <td>
@@ -281,53 +313,64 @@ function Psicologos() {
                           <span>
                             {psicologo.nombre} {psicologo.apellido}
                           </span>
+                        </div>
+                      </td>
+
+                      <td>{psicologo.nroMatricula}</td>
+                      <td>{psicologo.email}</td>
+
+                      <td>
+                        <div className="psicologos-acciones-tabla">
+
+                          <button
+                            type="button"
+                            className="psicologos-ver"
+                            onClick={() => setSeleccionado(psicologo)}
+                          >
+                            Ver detalles
+                          </button>
+
+                          <button
+                            type="button"
+                            className="psicologos-ver"
+                            onClick={() => seleccionarParaEditar(psicologo)}
+                            disabled={eliminandoId !== null}
+                          >
+                            Editar
+                          </button>
+
+                          <button
+                            type="button"
+                            className="psicologos-baja"
+                            onClick={() => confirmarBaja(psicologo)}
+                            disabled={eliminandoId !== null}
+                          >
+                            {eliminandoId === psicologo.id
+                              ? 'Dando de baja...'
+                              : 'Dar de baja'}
+                          </button>
 
                         </div>
                       </td>
 
-                      <td>
-                        {psicologo.nroMatricula}
-                      </td>
-
-                      <td>
-                        {psicologo.email}
-                      </td>
-
-                      <td>
-                        <button
-                          type="button"
-                          className="psicologos-ver"
-                          onClick={() => setSeleccionado(psicologo)}
-                        >
-                          Ver detalles
-                        </button>
-                      </td>
-
                     </tr>
-
                   ))}
-
                 </tbody>
 
               </table>
-
             </div>
           )}
 
       </div>
 
 
-      {/* ======================================
-          MODAL: VER DETALLES
-          ====================================== */}
+      {/* MODAL: DETALLES */}
 
       {seleccionado && (
-
         <Modal
           titulo="Ficha del profesional"
           onCerrar={() => setSeleccionado(null)}
         >
-
           <div className="psicologos-ficha">
 
             <div>
@@ -339,16 +382,12 @@ function Psicologos() {
 
             <div>
               <span>Número de matrícula</span>
-              <strong>
-                {seleccionado.nroMatricula}
-              </strong>
+              <strong>{seleccionado.nroMatricula}</strong>
             </div>
 
             <div>
               <span>Email</span>
-              <strong>
-                {seleccionado.email}
-              </strong>
+              <strong>{seleccionado.email}</strong>
             </div>
 
             <div>
@@ -373,26 +412,37 @@ function Psicologos() {
             </div>
 
           </div>
-
         </Modal>
       )}
 
 
-      {/* ======================================
-          MODAL: REGISTRAR PSICÓLOGO
-          ====================================== */}
+      {/* MODAL: REGISTRAR */}
 
       {mostrarAlta && (
-
         <Modal
           titulo="Registrar nuevo psicólogo"
           onCerrar={() => setMostrarAlta(false)}
         >
-
           <FormularioPsicologo
             onCreado={finalizarAlta}
           />
+        </Modal>
+      )}
 
+
+      {/* MODAL: EDITAR */}
+
+      {psicologoEnEdicion && (
+        <Modal
+          titulo="Editar psicólogo"
+          onCerrar={() => setPsicologoEnEdicion(null)}
+        >
+          <FormularioEditarPsicologo
+            key={psicologoEnEdicion.id}
+            psicologo={psicologoEnEdicion}
+            onGuardado={finalizarEdicion}
+            onCancelar={() => setPsicologoEnEdicion(null)}
+          />
         </Modal>
       )}
 

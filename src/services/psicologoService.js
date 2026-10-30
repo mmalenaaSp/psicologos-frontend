@@ -1,30 +1,50 @@
+
 const API_URL = 'http://localhost:3000/api/psicologos';
 
-// READ: Obtener todos los psicólogos activos
-export async function obtenerPsicologos(signal) {
+// ==========================================
+// FUNCIÓN AUXILIAR PARA SOLICITUDES HTTP
+// ==========================================
+
+async function solicitar(url, opciones = {}) {
   let response;
 
   try {
-    response = await fetch(API_URL, { signal });
+    response = await fetch(url, opciones);
+
   } catch (error) {
     if (error.name === 'AbortError') {
       throw error;
     }
 
     throw new Error(
-      'No se pudo conectar con el backend de PsycoGest.'
+      'No se pudo conectar con el backend de PsycoGest.',
+      { cause: error }
     );
   }
 
-  const datos = await response.json().catch(() => null);
+  const datos = response.status === 204
+    ? null
+    : await response.json().catch(() => null);
 
   if (!response.ok) {
     throw new Error(
       datos?.error ||
       datos?.mensaje ||
-      'No se pudieron obtener los psicólogos.'
+      datos?.message ||
+      `Error al comunicarse con el servidor (${response.status}).`
     );
   }
+
+  return datos;
+}
+
+
+// ==========================================
+// READ: OBTENER PSICÓLOGOS
+// ==========================================
+
+export async function obtenerPsicologos(signal) {
+  const datos = await solicitar(API_URL, { signal });
 
   if (!Array.isArray(datos)) {
     throw new Error(
@@ -35,33 +55,43 @@ export async function obtenerPsicologos(signal) {
   return datos;
 }
 
-// CREATE: Registrar un nuevo psicólogo
+
+// ==========================================
+// CREATE: REGISTRAR PSICÓLOGO
+// ==========================================
+
 export async function crearPsicologo(datosPsicologo) {
-  let response;
+  return solicitar(API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(datosPsicologo)
+  });
+}
 
-  try {
-    response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(datosPsicologo)
-    });
-  } catch {
-    throw new Error(
-      'No se pudo conectar con el backend de PsycoGest.'
-    );
-  }
 
-  const datos = await response.json().catch(() => null);
+// ==========================================
+// UPDATE: ACTUALIZAR PSICÓLOGO
+// ==========================================
 
-  if (!response.ok) {
-    throw new Error(
-      datos?.error ||
-      datos?.mensaje ||
-      'No se pudo registrar el psicólogo.'
-    );
-  }
+export async function actualizarPsicologo(id, datosPsicologo) {
+  return solicitar(`${API_URL}/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(datosPsicologo)
+  });
+}
 
-  return datos;
+
+// ==========================================
+// DELETE: DAR DE BAJA PSICÓLOGO
+// ==========================================
+
+export async function darDeBajaPsicologo(id) {
+  return solicitar(`${API_URL}/${id}`, {
+    method: 'DELETE'
+  });
 }
