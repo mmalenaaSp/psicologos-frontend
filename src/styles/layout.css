@@ -153,3 +153,31 @@
     padding: 16px;
   }
 }
+
+/* Botones de navegación del menú lateral */
+
+.pg-navigation button.pg-nav-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.pg-navigation button.pg-nav-item:focus-visible {
+  outline: 2px solid #DDEDE8;
+  outline-offset: 3px;
+}
+
+/* Menú lateral: botones no seleccionados */
+
+.pg-navigation button.pg-nav-item:not(.pg-nav-active) {
+  background: transparent;
+  color: #B9D1D6;
+}
+
+.pg-navigation button.pg-nav-item:not(.pg-nav-active):hover {
+  background: #285765;
+  color: #FFFFFF;
+}

@@ -1,10 +1,17 @@
+import { useState } from 'react';
 
 import Pacientes from './pages/Pacientes';
+import Psicologos from './pages/Psicologos';
+
 import './styles/layout.css';
 
 function App() {
+  // Controla qué pantalla está seleccionada
+  const [pantallaActual, setPantallaActual] = useState('pacientes');
+
   return (
     <div className="pg-shell">
+
       {/* Menú lateral */}
       <aside className="pg-sidebar">
 
@@ -17,17 +24,41 @@ function App() {
           </div>
         </div>
 
-        <nav className="pg-navigation" aria-label="Navegación principal">
+        <nav
+          className="pg-navigation"
+          aria-label="Navegación principal"
+        >
           <span className="pg-nav-label">GESTIÓN</span>
 
-          <span className="pg-nav-item pg-nav-active" aria-current="page">
+          {/* PACIENTES */}
+          <button
+            type="button"
+            className={`pg-nav-item ${
+              pantallaActual === 'pacientes' ? 'pg-nav-active' : ''
+            }`}
+            aria-current={
+              pantallaActual === 'pacientes' ? 'page' : undefined
+            }
+            onClick={() => setPantallaActual('pacientes')}
+          >
             Pacientes
-          </span>
+          </button>
 
-          <span className="pg-nav-item pg-nav-disabled">
-            Psicólogos · Próximamente
-          </span>
+          {/* PSICÓLOGOS */}
+          <button
+            type="button"
+            className={`pg-nav-item ${
+              pantallaActual === 'psicologos' ? 'pg-nav-active' : ''
+            }`}
+            aria-current={
+              pantallaActual === 'psicologos' ? 'page' : undefined
+            }
+            onClick={() => setPantallaActual('psicologos')}
+          >
+            Psicólogos
+          </button>
 
+          {/* PRÓXIMAS FUNCIONALIDADES */}
           <span className="pg-nav-item pg-nav-disabled">
             Turnos · Próximamente
           </span>
@@ -44,17 +75,28 @@ function App() {
 
       {/* Área principal */}
       <div className="pg-workspace">
+
         <header className="pg-topbar">
           <span>Panel de administración</span>
+
           <span className="pg-environment">
             Entorno de desarrollo
           </span>
         </header>
 
         <main className="pg-content">
-          <Pacientes />
+
+          {pantallaActual === 'pacientes' && (
+            <Pacientes />
+          )}
+
+          {pantallaActual === 'psicologos' && (
+            <Psicologos />
+          )}
+
         </main>
       </div>
+
     </div>
   );
 }
