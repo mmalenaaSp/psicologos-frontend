@@ -1,0 +1,313 @@
+/* ==========================================
+   PSYCOGEST - GESTIÓN DE PSICÓLOGOS
+   ========================================== */
+
+.psicologos-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+/* Encabezado */
+
+.psicologos-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.psicologos-encabezado h2 {
+  margin: 0 0 8px;
+  font-family: var(--font-heading);
+  font-size: 30px;
+  color: var(--color-primary-dark);
+}
+
+.psicologos-encabezado p {
+  margin: 0;
+  font-size: 14px;
+  color: #647780;
+}
+
+.psicologos-contador {
+  padding: 10px 16px;
+  border-radius: 24px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Panel principal */
+
+.psicologos-panel {
+  padding: 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  min-width: 0;
+}
+
+.psicologos-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 440px;
+  margin-bottom: 24px;
+}
+
+.psicologos-toolbar label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.psicologos-toolbar input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--color-text);
+}
+
+.psicologos-toolbar input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Tabla */
+
+.psicologos-tabla-contenedor {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.psicologos-tabla-contenedor table {
+  width: 100%;
+  min-width: 690px;
+  border-collapse: collapse;
+}
+
+.psicologos-tabla-contenedor th,
+.psicologos-tabla-contenedor td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.psicologos-tabla-contenedor th {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.psicologos-tabla-contenedor tr:hover td {
+  background: #F8FBFA;
+}
+
+.psicologos-profesional {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.psicologos-avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+/* Botones */
+
+.psicologos-page .psicologos-ver {
+  padding: 10px 14px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.psicologos-page .psicologos-ver:hover {
+  background: var(--color-border);
+}
+
+/* Estado vacío y errores */
+
+.psicologos-vacio {
+  text-align: center;
+  padding: 40px 16px;
+}
+
+.psicologos-vacio h3 {
+  color: var(--color-primary-dark);
+  margin-bottom: 8px;
+}
+
+.psicologos-vacio p {
+  color: #647780;
+  font-size: 14px;
+}
+
+.psicologos-error {
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: #FBEDEF;
+  color: var(--color-danger);
+}
+
+/* Ficha del profesional */
+
+.psicologos-ficha {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  padding-top: 24px;
+}
+
+.psicologos-ficha > div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.psicologos-ficha span {
+  font-size: 12px;
+  color: #647780;
+}
+
+.psicologos-ficha strong {
+  font-size: 14px;
+  color: var(--color-primary-dark);
+  overflow-wrap: anywhere;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+  .psicologos-encabezado h2 {
+    font-size: 25px;
+  }
+
+  .psicologos-panel {
+    padding: 16px;
+  }
+
+  .psicologos-ficha {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Contador y botón de registro */
+
+.psicologos-acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.psicologos-page .psicologos-nuevo {
+  padding: 12px 18px;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.psicologos-page .psicologos-nuevo:hover {
+  filter: brightness(0.92);
+}
+
+.psicologos-page .psicologos-nuevo:focus-visible {
+  outline: 2px solid var(--color-primary-dark);
+  outline-offset: 3px;
+}
+
+/* Campos que deben ocupar todo el ancho del formulario */
+
+.psicologos-page .psicologos-formulario .psicologos-campo-completo {
+  grid-column: 1 / -1;
+}
+
+.psicologos-page .psicologos-formulario > button[type="submit"] {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* Botones de la tabla */
+
+.psicologos-acciones-tabla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.psicologos-page .psicologos-baja {
+  padding: 10px 14px;
+  background: #FBEDEF;
+  color: var(--color-danger);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.psicologos-page .psicologos-baja:hover:not(:disabled) {
+  background: #F4DADD;
+}
+
+.psicologos-page .psicologos-baja:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.psicologos-page button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+/* Formulario de edición */
+
+.psicologos-page .psicologos-formulario label {
+  min-width: 0;
+}
+
+.psicologos-page .psicologos-formulario .psicologos-campo-completo {
+  grid-column: 1 / -1;
+}
+
+.psicologos-page .psicologos-formulario > button {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* El texto no debe desbordar las celdas */
+
+.psicologos-tabla-contenedor td {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .psicologos-page .psicologos-formulario .psicologos-campo-completo {
+    grid-column: 1;
+  }
+}
