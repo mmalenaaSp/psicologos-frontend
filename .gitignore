@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Variables privadas del entorno
+.env
+.env.*
+!.env.example
+
+.test-artifacts/

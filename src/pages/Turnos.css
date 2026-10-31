@@ -1,0 +1,12 @@
+﻿.turnos { max-width: 1150px; margin: auto; color: #1F2D35; }
+.turnos-form, .turnos details { background: #DDEDE8; padding: 20px; border-radius: 12px; margin-bottom: 24px; }
+.turnos-filtros { display: flex; gap: 16px; flex-wrap: wrap; align-items: end; margin: 20px 0; }
+.turnos-campo { display: flex; flex-direction: column; gap: 8px; flex: 1 1 150px; }
+.turnos input, .turnos select { padding: 10px; border: 1px solid #647780; border-radius: 8px; background: #F7F9F8; color: #1F2D35; min-width: 0; }
+.turnos button, .turnos-confirmacion button { background: #16777C; color: #F7F9F8; border: 0; border-radius: 8px; padding: 10px 16px; cursor: pointer; }
+.turnos button:disabled { opacity: .6; cursor: wait; }
+.turnos fieldset { border: 0; padding: 0; min-width: 0; }
+.turnos-lista { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,280px),1fr)); gap: 16px; margin-top: 24px; }
+.turnos-lista article { border: 1px solid #DDEDE8; border-left: 4px solid #16777C; padding: 20px; border-radius: 12px; background: #F7F9F8; }
+.turnos-acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+.turnos-confirmacion { position: fixed; inset: 30% max(16px, calc((100vw - 480px)/2)) auto; background: #DDEDE8; color: #173E49; padding: 32px; border: 2px solid #16777C; border-radius: 16px; box-shadow: 0 0 0 100vmax #173e4966; z-index: 100; }
