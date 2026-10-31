@@ -1,12 +1,12 @@
-import { TipoSesion } from '../models/TipoSesion';
+import { API_BASE_URL, apiFetch } from './api.js';
+import { TipoSesion } from '../models/TipoSesion.js';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/$/, '');
 const RESOURCE_URL = `${API_BASE_URL}/tipos-sesion`;
 
 async function request(url, options) {
   let response;
   try {
-    response = await fetch(url, {
+    response = await apiFetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
@@ -25,9 +25,9 @@ async function request(url, options) {
 }
 
 export async function listarTiposSesion(nombre = '') {
-  const url = new URL(RESOURCE_URL);
-  if (nombre.trim()) url.searchParams.set('nombre', nombre.trim());
-  const data = await request(url.toString());
+  const query = new URLSearchParams();
+  if (nombre.trim()) query.set('nombre', nombre.trim());
+  const data = await request(`${RESOURCE_URL}${query.size ? `?${query}` : ''}`);
   return data.map(TipoSesion.fromApi);
 }
 

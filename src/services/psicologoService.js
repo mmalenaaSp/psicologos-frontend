@@ -1,5 +1,6 @@
+import { API_BASE_URL, apiFetch } from './api.js';
 
-const API_URL = 'http://localhost:3000/api/psicologos';
+const API_URL = `${API_BASE_URL}/psicologos`;
 
 // ==========================================
 // FUNCIÓN AUXILIAR PARA SOLICITUDES HTTP
@@ -9,7 +10,7 @@ async function solicitar(url, opciones = {}) {
   let response;
 
   try {
-    response = await fetch(url, opciones);
+    response = await apiFetch(url, opciones);
 
   } catch (error) {
     if (error.name === 'AbortError') {

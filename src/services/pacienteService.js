@@ -1,7 +1,8 @@
-const API_URL = 'http://localhost:3000/api/pacientes';
+import { API_BASE_URL, apiFetch } from './api.js';
+const API_URL = `${API_BASE_URL}/pacientes`;
 
 export const obtenerPacientes = async (signal) => {
-  const respuesta = await fetch(API_URL, { signal });
+  const respuesta = await apiFetch(API_URL, { signal });
 
   if (!respuesta.ok) {
     throw new Error(
@@ -13,8 +14,8 @@ export const obtenerPacientes = async (signal) => {
 };
 
 export const crearPaciente = async (datosPaciente) => {
-  const respuesta = await fetch(
-    'http://localhost:3000/api/pacientes',
+  const respuesta = await apiFetch(
+    `${API_BASE_URL}/pacientes`,
     {
       method: 'POST',
       headers: {
@@ -37,8 +38,8 @@ export const crearPaciente = async (datosPaciente) => {
 
 // UPDATE: Actualizar un paciente existente
 export const actualizarPaciente = async (id, datosPaciente) => {
-  const respuesta = await fetch(
-    `http://localhost:3000/api/pacientes/${id}`,
+  const respuesta = await apiFetch(
+    `${API_BASE_URL}/pacientes/${id}`,
     {
       method: 'PUT',
       headers: {
@@ -61,8 +62,8 @@ export const actualizarPaciente = async (id, datosPaciente) => {
 
 // DELETE: Dar de baja lógicamente a un paciente
 export const darDeBajaPaciente = async (id) => {
-  const respuesta = await fetch(
-    `http://localhost:3000/api/pacientes/${id}`,
+  const respuesta = await apiFetch(
+    `${API_BASE_URL}/pacientes/${id}`,
     {
       method: 'DELETE'
     }

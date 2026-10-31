@@ -1,0 +1,88 @@
+.ps-perfil {
+  min-height: auto;
+}
+
+.ps-perfil-completar {
+  min-height: 100vh;
+  padding: 40px 20px;
+  align-items: center;
+}
+
+.ps-perfil-card {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.ps-perfil-cuenta,
+.ps-perfil-ayuda {
+  color: var(--ps-secundario);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.ps-perfil-form select,
+.ps-inicio-form select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #C8DBD6;
+  border-radius: 9px;
+  background: white;
+  color: var(--ps-texto);
+  font: inherit;
+}
+
+.ps-perfil-colegio {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #C8DBD6;
+  border-radius: 9px;
+}
+
+.ps-perfil-colegio legend {
+  color: var(--ps-oscuro);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ps-perfil-secundario {
+  padding: 12px 16px;
+  margin-top: 12px;
+  color: var(--ps-principal);
+  background: white;
+  border: 1px solid #C8DBD6;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.ps-inicio button:disabled,
+.ps-inicio input:disabled,
+.ps-inicio select:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.ps-portal {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.ps-portal .ps-inicio-card {
+  margin-top: 24px;
+}
+
+.ps-portal-datos {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) 2fr;
+  gap: 14px;
+}
+
+.ps-portal-datos dt {
+  font-weight: 700;
+}
+
+.ps-portal-datos dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
