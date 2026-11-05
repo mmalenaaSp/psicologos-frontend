@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { crearPaciente } from '../services/pacienteService';
+import { apiRequest } from '../services/api';
 
 function FormularioPaciente({ onCreado }) {
   const valoresIniciales = {
@@ -8,7 +9,7 @@ function FormularioPaciente({ onCreado }) {
     apellido: '',
     telefono: '',
     fechaNacimiento: '',
-    obraSocialId: '' // <-- Agregado para enviar la OS seleccionada
+    obraSocialId: ''
   };
 
   const [formulario, setFormulario] = useState(valoresIniciales);
@@ -17,23 +18,21 @@ function FormularioPaciente({ onCreado }) {
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
 
-  // Cargar el listado de Obras Sociales al montar el componente
   useEffect(() => {
-    const cargarObrasSociales = async () => {
-      try {
-        const respuesta = await fetch('http://localhost:3000/api/obras-sociales', {
-          credentials: 'include'
-        });
-        if (respuesta.ok) {
-          const datos = await respuesta.json();
-          setObrasSociales(datos);
-        }
-      } catch (err) {
-        console.error('Error al obtener obras sociales:', err);
-      }
-    };
+    const controller = new AbortController();
 
-    cargarObrasSociales();
+    apiRequest('/obras-sociales', { signal: controller.signal })
+      .then((data) => {
+        const lista = Array.isArray(data) ? data : (data.obrasSociales || []);
+        setObrasSociales(lista);
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          console.error('Error al cargar obras sociales:', err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   const manejarCambio = (e) => {
@@ -53,18 +52,14 @@ function FormularioPaciente({ onCreado }) {
     setGuardando(true);
 
     try {
-      // Si la obra social se deja vacía, se envía null para que no rompa la FK
-      const datosAEnviar = {
-        ...formulario,
-        obraSocialId: formulario.obraSocialId ? Number(formulario.obraSocialId) : null
-      };
-
-      const nuevoPaciente = await crearPaciente(datosAEnviar);
+      const nuevoPaciente = await crearPaciente(formulario);
 
       setMensaje('Paciente registrado correctamente');
       setFormulario(valoresIniciales);
 
-      if (onCreado) onCreado(nuevoPaciente);
+      if (onCreado) {
+        onCreado(nuevoPaciente);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -110,22 +105,6 @@ function FormularioPaciente({ onCreado }) {
       </label>
 
       <label>
-        Obra Social
-        <select
-          name="obraSocialId"
-          value={formulario.obraSocialId}
-          onChange={manejarCambio}
-        >
-          <option value="">Sin obra social</option>
-          {obrasSociales.map((os) => (
-            <option key={os.id} value={os.id}>
-              {os.nombre}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label>
         Teléfono
         <input
           type="tel"
@@ -145,6 +124,22 @@ function FormularioPaciente({ onCreado }) {
           onChange={manejarCambio}
           required
         />
+      </label>
+
+      <label>
+        Obra Social
+        <select
+          name="obraSocialId"
+          value={formulario.obraSocialId}
+          onChange={manejarCambio}
+        >
+          <option value="">Sin obra social (Particular)</option>
+          {obrasSociales.map((os) => (
+            <option key={os.id} value={os.id}>
+              {os.nombre}
+            </option>
+          ))}
+        </select>
       </label>
 
       <button type="submit" disabled={guardando}>
