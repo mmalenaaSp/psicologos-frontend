@@ -19,14 +19,14 @@ export default function Liquidaciones() {
 
     Promise.all([
       apiRequest(`/liquidaciones?${new URLSearchParams({ ...(obraSocialId ? { obraSocialId } : {}), ...(estado ? { estado } : {}) })}`, { signal: c.signal }),
-      apiRequest('/obras-sociales', { signal: c.signal }), // Obtenemos las obras sociales directo de su endpoint
+      apiRequest('/obras-sociales', { signal: c.signal }),
       apiRequest('/turnos?estado=RESERVADO', { signal: c.signal })
     ])
       .then(([l, o, t]) => {
         if (!c.signal.aborted) {
-          setItems(l);
+          setItems(l || []);
           setObras(Array.isArray(o) ? o : (o.obrasSociales || []));
-          setSesiones(t);
+          setSesiones(t || []);
         }
       })
       .catch(e => {
@@ -43,45 +43,75 @@ export default function Liquidaciones() {
     setAviso('');
 
     try {
-      if (confirmacion.id) {
+      if (confirmacion && confirmacion.id) {
+        // Registrar pago
         await apiRequest(`/liquidaciones/${confirmacion.id}/pagar`, { method: 'PATCH', body: '{}' });
+        setAviso('Liquidación marcada como pagada.');
       } else {
+        // Emitir nueva liquidación
+        const detalles = Object.entries(importes)
+          .filter(([, v]) => v !== '' && !isNaN(Number(v)) && Number(v) > 0)
+          .map(([turnoId, importe]) => ({
+            turnoId: Number(turnoId),
+            importe: Number(importe)
+          }));
+
+        if (detalles.length === 0) {
+          throw new Error('Debes ingresar al menos un importe válido para emitir la liquidación.');
+        }
+
+        const bodyPayload = {
+          obraSocialId: Number(obraSocialId),
+          detalles
+        };
+
+        console.log('Enviando liquidacion:', bodyPayload);
+
         await apiRequest('/liquidaciones', {
           method: 'POST',
-          body: JSON.stringify({
-            obraSocialId: Number(obraSocialId),
-            detalles: Object.entries(importes)
-              .filter(([, v]) => v)
-              .map(([turnoId, importe]) => ({ turnoId: Number(turnoId), importe }))
-          })
+          body: JSON.stringify(bodyPayload)
         });
+
+        setImportes({});
+        setAviso('Liquidación guardada correctamente.');
       }
 
-      setImportes({});
       setConfirmacion(null);
-      setAviso('Liquidación guardada.');
-      setItems(await apiRequest(`/liquidaciones?${new URLSearchParams({ ...(obraSocialId ? { obraSocialId } : {}), ...(estado ? { estado } : {}) })}`));
+
+      // Refrescar datos
+      const [lActualizadas, tActualizados] = await Promise.all([
+        apiRequest(`/liquidaciones?${new URLSearchParams({ ...(obraSocialId ? { obraSocialId } : {}), ...(estado ? { estado } : {}) })}`),
+        apiRequest('/turnos?estado=RESERVADO')
+      ]);
+      setItems(lActualizadas || []);
+      setSesiones(tActualizados || []);
+
     } catch (e) {
-      setError(e.message);
+      console.error('Error al ejecutar liquidación:', e);
+      setError(e.message || 'Error en el servidor al procesar la liquidación.');
     } finally {
       setOcupado(false);
     }
   }
 
-  // Filtrar las sesiones que correspondan a la Obra Social seleccionada en el formulario
   const sesionesFiltradas = obraSocialId
-    ? sesiones.filter(t => String(t.paciente?.obraSocialId) === String(obraSocialId) || String(t.paciente?.obraSocial?.id) === String(obraSocialId))
+    ? sesiones.filter(t => 
+        String(t.paciente?.obraSocialId) === String(obraSocialId) || 
+        String(t.paciente?.obraSocial?.id) === String(obraSocialId)
+      )
     : sesiones;
+
+  const tieneImporteValido = Object.values(importes).some(v => v !== '' && Number(v) > 0);
 
   return (
     <section className="turnos">
       <h1>Liquidaciones</h1>
-      <p>Ingresá el importe acordado por cada sesión. El total suma esos importes y se conserva al emitir. La selección de una reserva no acredita asistencia.</p>
+      <p>Ingresá el importe acordado por cada sesión. El total suma esos importes y se conserva al emitir.</p>
       <Mensaje {...{ error, aviso }} />
-      
+
       <div className="turnos-filtros">
         <Campo titulo="Obra social">
-          <select value={obraSocialId} onChange={e => setObra(e.target.value)}>
+          <select value={obraSocialId} onChange={e => { setObra(e.target.value); setImportes({}); }}>
             <option value="">Todas</option>
             {obras.map(o => (
               <option key={o.id} value={o.id}>{o.nombre}</option>
@@ -92,19 +122,20 @@ export default function Liquidaciones() {
         <Campo titulo="Estado">
           <select value={estado} onChange={e => setEstado(e.target.value)}>
             <option value="">Todos</option>
-            <option>PENDIENTE</option>
-            <option>PAGADA</option>
+            <option value="PENDIENTE">PENDIENTE</option>
+            <option value="PAGADA">PAGADA</option>
           </select>
         </Campo>
       </div>
 
       <form onSubmit={e => {
         e.preventDefault();
+        if (!obraSocialId || !tieneImporteValido) return;
         setConfirmacion({ texto: '¿Emitir la liquidación con estos importes? Revisá la obra social y las sesiones seleccionadas.' });
       }}>
         <h2>Emitir liquidación</h2>
-        <p>Completá únicamente los importes de las sesiones a incluir. El servidor comprueba que el paciente corresponda a la obra social elegida y que no se liquide dos veces.</p>
-        
+        <p>Completá únicamente los importes de las sesiones a incluir.</p>
+
         <fieldset disabled={ocupado || !obraSocialId}>
           {!obraSocialId ? (
             <p className="aviso-seleccion">Seleccioná una obra social arriba para ver las sesiones a liquidar.</p>
@@ -126,8 +157,8 @@ export default function Liquidaciones() {
             ))
           )}
 
-          <button disabled={!obraSocialId || !Object.values(importes).some(Boolean)}>
-            Emitir
+          <button type="submit" disabled={!obraSocialId || !tieneImporteValido || ocupado}>
+            {ocupado ? 'Procesando...' : 'Emitir'}
           </button>
         </fieldset>
       </form>
@@ -139,7 +170,7 @@ export default function Liquidaciones() {
             <p>{l.obraSocial?.nombre || 'Sin OS'} · {l.estado}</p>
             <p>{new Date(l.fechaEmision).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })} · $ {l.valorTotal}</p>
             <ul>
-              {l.detalles.map(d => (
+              {l.detalles?.map(d => (
                 <li key={d.turnoId}>{d.fechaSesion?.slice(0, 10)} · {d.paciente} · {d.sesion} · $ {d.importe}</li>
               ))}
             </ul>
