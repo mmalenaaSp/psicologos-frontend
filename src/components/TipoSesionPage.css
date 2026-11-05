@@ -1,12 +1,12 @@
 :root {
-  --ink: #27233a;
-  --muted: #77738a;
-  --line: #e9e6f1;
+  --ink: #173E49;
+  --muted: #647780;
+  --line: #D8E5E2;
   --paper: #fff;
-  --canvas: #f6f5fa;
-  --purple: #6e57cf;
-  --purple-dark: #5943b4;
-  --purple-soft: #f1edff;
+  --canvas: #F7F9F8;
+  --purple: #16777C;
+  --purple-dark: #12595E;
+  --purple-soft: #DDEDE8;
   --red: #b84759;
   --red-soft: #fff0f1;
   --green: #26755c;
@@ -17,7 +17,7 @@
 .page-shell {
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 90% 0%, rgb(225 218 255 / 48%), transparent 35rem),
+    radial-gradient(ellipse at 90% 0%, rgb(221 237 232 / 48%), transparent 35rem),
     var(--canvas);
 }
 
@@ -139,8 +139,8 @@
 }
 
 .button-secondary:hover:not(:disabled) {
-  background: #faf9fd;
-  border-color: #d5cfee;
+  background: #F7F9F8;
+  border-color: #C8DBD6;
 }
 
 .button-danger {
@@ -227,7 +227,7 @@
 }
 
 .icon-button:hover {
-  border-color: #d5cfee;
+  border-color: #C8DBD6;
   color: var(--purple);
 }
 
@@ -239,11 +239,11 @@
   gap: 8px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  color: #9994a9;
+  color: #76888B;
 }
 
 .search-field:focus-within {
-  border-color: #a697e7;
+  border-color: #16777C;
   box-shadow: 0 0 0 3px rgb(110 87 207 / 10%);
 }
 
@@ -263,7 +263,7 @@
 }
 
 .search-field input::placeholder {
-  color: #9994a9;
+  color: #76888B;
 }
 
 .type-list {
@@ -275,7 +275,7 @@
 }
 
 .type-list li + li {
-  border-top: 1px solid #f0eef5;
+  border-top: 1px solid #E4EEEB;
 }
 
 .type-row {
@@ -293,7 +293,7 @@
 
 .type-row:hover,
 .type-row.is-selected {
-  background: #f7f5ff;
+  background: #EDF5F2;
 }
 
 .type-avatar {
@@ -328,7 +328,7 @@
 }
 
 .row-chevron {
-  color: #a7a2b5;
+  color: #819294;
   font-size: 1.45rem;
 }
 
@@ -350,7 +350,7 @@
 }
 
 .empty-icon {
-  color: #a99be9;
+  color: #5C9A98;
   font-size: 1.7rem;
 }
 
@@ -519,7 +519,7 @@
 }
 
 .type-form input:focus {
-  border-color: #a697e7;
+  border-color: #16777C;
   outline: 0;
   box-shadow: 0 0 0 3px rgb(110 87 207 / 10%);
 }

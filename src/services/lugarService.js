@@ -1,12 +1,12 @@
-import { Lugar } from '../models/Lugar';
+import { API_BASE_URL, apiFetch } from './api.js';
+import { Lugar } from '../models/Lugar.js';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/$/, '');
 const RESOURCE_URL = `${API_BASE_URL}/lugares`;
 
 async function request(url, options) {
   let response;
   try {
-    response = await fetch(url, {
+    response = await apiFetch(url, {
       ...options,
       headers: { 'Content-Type': 'application/json', ...options?.headers }
     });
@@ -22,9 +22,9 @@ async function request(url, options) {
 }
 
 export async function listarLugares(filtro = '') {
-  const url = new URL(RESOURCE_URL);
-  if (filtro.trim()) url.searchParams.set('filtro', filtro.trim());
-  const data = await request(url.toString());
+  const query = new URLSearchParams();
+  if (filtro.trim()) query.set('filtro', filtro.trim());
+  const data = await request(`${RESOURCE_URL}${query.size ? `?${query}` : ''}`);
   return data.map(Lugar.fromApi);
 }
 

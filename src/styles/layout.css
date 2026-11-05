@@ -39,13 +39,17 @@
   font-weight: 800;
 }
 
-.pg-brand h1 {
+.pg-brand-name {
+  display: block;
+  font-family: var(--font-heading);
+  font-weight: 700;
   font-size: 19px;
   color: white;
   margin: 0;
 }
 
-.pg-brand p {
+.pg-brand-tagline {
+  display: block;
   font-size: 10px;
   color: #C4D8D8;
   margin: 3px 0 0;
@@ -153,3 +157,45 @@
     padding: 16px;
   }
 }
+
+/* Botones de navegación del menú lateral */
+
+.pg-navigation button.pg-nav-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.pg-navigation button.pg-nav-item:focus-visible {
+  outline: 2px solid #DDEDE8;
+  outline-offset: 3px;
+}
+
+/* Menú lateral: botones no seleccionados */
+
+.pg-navigation button.pg-nav-item:not(.pg-nav-active) {
+  background: transparent;
+  color: #B9D1D6;
+}
+
+.pg-navigation button.pg-nav-item:not(.pg-nav-active):hover {
+  background: #285765;
+  color: #FFFFFF;
+}
+/* El bloque de marca conserva su presentación y usa la navegación del portal. */
+.pg-brand-home {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pg-brand-home .pg-brand-logo { flex-shrink: 0; }
+.pg-brand-home:hover .pg-brand-name { text-decoration: underline; text-underline-offset: 3px; }
+.pg-brand-home:focus-visible { outline: 2px solid #DDEDE8; outline-offset: 6px; border-radius: var(--radius-md); }

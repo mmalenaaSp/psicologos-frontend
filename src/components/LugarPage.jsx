@@ -98,14 +98,7 @@ function LugarPage() {
   }
 
   return (
-    <main className="lugar-page">
-      <header className="lugar-topbar">
-        <a className="lugar-brand" href="#inicio" aria-label="PsycoGest, inicio">
-          <span className="lugar-brand-mark" aria-hidden="true">P</span>
-          <span>PsycoGest</span>
-        </a>
-        <span className="lugar-topbar-label">Administración</span>
-      </header>
+    <div className="lugar-page">
 
       <section className="lugar-content" aria-labelledby="lugar-title">
         <div className="lugar-heading">
@@ -246,7 +239,7 @@ function LugarPage() {
           </section>
         </div>
       )}
-    </main>
+    </div>
   );
 }
 

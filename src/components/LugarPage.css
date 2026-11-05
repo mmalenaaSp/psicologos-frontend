@@ -1,13 +1,13 @@
 .lugar-page {
-  --lugar-ink: #29263c;
-  --lugar-muted: #77748a;
-  --lugar-line: #e8e6ef;
-  --lugar-purple: #6854c8;
-  --lugar-purple-dark: #5140a8;
-  --lugar-purple-soft: #f0edff;
+  --lugar-ink: #173E49;
+  --lugar-muted: #647780;
+  --lugar-line: #D8E5E2;
+  --lugar-purple: #16777C;
+  --lugar-purple-dark: #12595E;
+  --lugar-purple-soft: #DDEDE8;
   --lugar-red: #a63f50;
   min-height: 100vh;
-  background: radial-gradient(ellipse at 90% 0%, #e9e4ff 0, transparent 35rem), #f7f6fa;
+  background: radial-gradient(ellipse at 90% 0%, #DDEDE8 0, transparent 35rem), #F7F9F8;
   color: var(--lugar-ink);
   font-family: Inter, 'Segoe UI', system-ui, sans-serif;
 }
@@ -213,7 +213,7 @@
   gap: 8px;
   border: 1px solid var(--lugar-line);
   border-radius: 10px;
-  color: #9994a9;
+  color: #76888B;
 }
 
 .lugar-search > span:not(.lugar-sr-only) {
@@ -240,7 +240,7 @@
 }
 
 .lugar-list li + li {
-  border-top: 1px solid #f0eef5;
+  border-top: 1px solid #E4EEEB;
 }
 
 .lugar-row {
@@ -258,7 +258,7 @@
 
 .lugar-row:hover,
 .lugar-row.is-selected {
-  background: #f7f5ff;
+  background: #EDF5F2;
 }
 
 .lugar-avatar {
@@ -297,7 +297,7 @@
 }
 
 .lugar-chevron {
-  color: #a7a2b5;
+  color: #819294;
   font-size: 1.45rem;
 }
 
@@ -319,7 +319,7 @@
 }
 
 .lugar-empty-icon {
-  color: #a99be9;
+  color: #5C9A98;
   font-size: 1.7rem;
 }
 
@@ -470,7 +470,7 @@
 .lugar-button:focus-visible,
 .lugar-row:focus-visible,
 .lugar-icon-button:focus-visible {
-  outline: 3px solid #b7a5f6;
+  outline: 3px solid #16777C;
   outline-offset: 2px;
 }
 

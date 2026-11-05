@@ -108,14 +108,7 @@ function TipoSesionPage() {
   }
 
   return (
-    <main className="page-shell">
-      <header className="topbar">
-        <a className="brand" href="#inicio" aria-label="PsycoGest, inicio">
-          <span className="brand-mark" aria-hidden="true">P</span>
-          <span>PsycoGest</span>
-        </a>
-        <span className="topbar-label">Administración</span>
-      </header>
+    <div className="page-shell">
 
       <section className="page-content" aria-labelledby="page-title">
         <div className="page-heading">
@@ -264,7 +257,7 @@ function TipoSesionPage() {
           </section>
         </div>
       )}
-    </main>
+    </div>
   );
 }
 

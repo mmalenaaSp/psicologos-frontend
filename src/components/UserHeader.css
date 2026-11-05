@@ -1,0 +1,26 @@
+.pg-user-header { position: relative; z-index: 20; min-height: 88px; color: #1F2D35; }
+.pg-greeting { margin: 0; font-size: clamp(18px, 2vw, 24px); font-weight: 500; overflow-wrap: anywhere; }
+.pg-user { position: relative; flex-shrink: 0; max-width: 55%; }
+.pg-profile-trigger { display: flex; align-items: center; gap: 12px; max-width: 100%; min-height: 56px; padding: 7px 14px 7px 8px; border: 1px solid transparent; border-radius: 20px; background: #eaf3f0; color: #173E49; font: inherit; cursor: pointer; }
+.pg-avatar { display: grid; place-items: center; flex: 0 0 40px; height: 40px; border-radius: 50%; background: #16777C; color: white; font-size: 15px; }
+.pg-profile-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+.pg-profile-trigger svg { flex-shrink: 0; transition: transform .15s; }
+.pg-profile-trigger[aria-expanded="true"] > svg { transform: rotate(180deg); }
+.pg-profile-trigger:hover { background: #DDEDE8; }
+.pg-user button:focus-visible { outline: 2px solid #16777C; outline-offset: 3px; }
+.pg-user-dropdown { position: absolute; top: calc(100% + 10px); right: 0; width: min(360px, calc(100vw - 32px)); border: 1px solid #dce5e4; border-radius: 14px; background: white; box-shadow: 0 12px 32px #173e491a; overflow: hidden; }
+.pg-account-email, .pg-user-dropdown button { display: flex; align-items: center; gap: 16px; width: 100%; padding: 22px 24px; color: #647780; font: inherit; font-size: 15px; text-align: left; }
+.pg-account-email span { min-width: 0; overflow-wrap: anywhere; }
+.pg-user-dropdown svg { flex-shrink: 0; }
+.pg-user-dropdown button { border: 0; border-top: 1px solid #e8eeec; border-radius: 0; background: white; cursor: pointer; }
+.pg-user-dropdown button:hover, .pg-user-dropdown button:focus-visible { background: #F7F9F8; }
+.pg-user-dropdown button:focus-visible { outline-offset: -3px; }
+.pg-user-dropdown .pg-user-logout { color: #b53d47; }
+.pg-user-dropdown button:disabled { opacity: .65; cursor: wait; }
+@media (max-width: 480px) {
+  .pg-user-header { gap: 10px; }
+  .pg-user { max-width: 48%; }
+  .pg-profile-trigger { gap: 6px; padding-right: 8px; }
+  .pg-profile-name { display: none; }
+  .pg-account-email, .pg-user-dropdown button { padding: 20px; }
+}
