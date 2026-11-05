@@ -1,7 +1,10 @@
 const API_URL = 'http://localhost:3000/api/pacientes';
 
 export const obtenerPacientes = async (signal) => {
-  const respuesta = await fetch(API_URL, { signal });
+  const respuesta = await fetch(API_URL, { 
+    signal,
+    credentials: 'include' // <-- Envía las cookies de sesión al backend
+  });
 
   if (!respuesta.ok) {
     throw new Error(
@@ -13,16 +16,14 @@ export const obtenerPacientes = async (signal) => {
 };
 
 export const crearPaciente = async (datosPaciente) => {
-  const respuesta = await fetch(
-    'http://localhost:3000/api/pacientes',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(datosPaciente)
-    }
-  );
+  const respuesta = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include', // <-- Envía las cookies de sesión al backend
+    body: JSON.stringify(datosPaciente)
+  });
 
   const datos = await respuesta.json();
 
@@ -37,16 +38,14 @@ export const crearPaciente = async (datosPaciente) => {
 
 // UPDATE: Actualizar un paciente existente
 export const actualizarPaciente = async (id, datosPaciente) => {
-  const respuesta = await fetch(
-    `http://localhost:3000/api/pacientes/${id}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(datosPaciente)
-    }
-  );
+  const respuesta = await fetch(`${API_URL}/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include', // <-- Envía las cookies de sesión al backend
+    body: JSON.stringify(datosPaciente)
+  });
 
   const datos = await respuesta.json();
 
@@ -61,12 +60,10 @@ export const actualizarPaciente = async (id, datosPaciente) => {
 
 // DELETE: Dar de baja lógicamente a un paciente
 export const darDeBajaPaciente = async (id) => {
-  const respuesta = await fetch(
-    `http://localhost:3000/api/pacientes/${id}`,
-    {
-      method: 'DELETE'
-    }
-  );
+  const respuesta = await fetch(`${API_URL}/${id}`, {
+    method: 'DELETE',
+    credentials: 'include' // <-- Envía las cookies de sesión al backend
+  });
 
   const datos = await respuesta.json();
 

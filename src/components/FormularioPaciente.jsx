@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { crearPaciente } from '../services/pacienteService';
 
 function FormularioPaciente({ onCreado }) {
@@ -7,13 +7,34 @@ function FormularioPaciente({ onCreado }) {
     nombre: '',
     apellido: '',
     telefono: '',
-    fechaNacimiento: ''
+    fechaNacimiento: '',
+    obraSocialId: '' // <-- Agregado para enviar la OS seleccionada
   };
 
   const [formulario, setFormulario] = useState(valoresIniciales);
+  const [obrasSociales, setObrasSociales] = useState([]);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
+
+  // Cargar el listado de Obras Sociales al montar el componente
+  useEffect(() => {
+    const cargarObrasSociales = async () => {
+      try {
+        const respuesta = await fetch('http://localhost:3000/api/obras-sociales', {
+          credentials: 'include'
+        });
+        if (respuesta.ok) {
+          const datos = await respuesta.json();
+          setObrasSociales(datos);
+        }
+      } catch (err) {
+        console.error('Error al obtener obras sociales:', err);
+      }
+    };
+
+    cargarObrasSociales();
+  }, []);
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
@@ -32,12 +53,18 @@ function FormularioPaciente({ onCreado }) {
     setGuardando(true);
 
     try {
-      const nuevoPaciente = await crearPaciente(formulario);
+      // Si la obra social se deja vacía, se envía null para que no rompa la FK
+      const datosAEnviar = {
+        ...formulario,
+        obraSocialId: formulario.obraSocialId ? Number(formulario.obraSocialId) : null
+      };
+
+      const nuevoPaciente = await crearPaciente(datosAEnviar);
 
       setMensaje('Paciente registrado correctamente');
       setFormulario(valoresIniciales);
 
-      onCreado(nuevoPaciente);
+      if (onCreado) onCreado(nuevoPaciente);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -80,6 +107,22 @@ function FormularioPaciente({ onCreado }) {
           onChange={manejarCambio}
           required
         />
+      </label>
+
+      <label>
+        Obra Social
+        <select
+          name="obraSocialId"
+          value={formulario.obraSocialId}
+          onChange={manejarCambio}
+        >
+          <option value="">Sin obra social</option>
+          {obrasSociales.map((os) => (
+            <option key={os.id} value={os.id}>
+              {os.nombre}
+            </option>
+          ))}
+        </select>
       </label>
 
       <label>
