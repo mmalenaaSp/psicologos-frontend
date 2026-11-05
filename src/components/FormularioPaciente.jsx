@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { crearPaciente } from '../services/pacienteService';
+import { apiRequest } from '../services/api';
 
 function FormularioPaciente({ onCreado }) {
   const valoresIniciales = {
@@ -7,13 +8,32 @@ function FormularioPaciente({ onCreado }) {
     nombre: '',
     apellido: '',
     telefono: '',
-    fechaNacimiento: ''
+    fechaNacimiento: '',
+    obraSocialId: ''
   };
 
   const [formulario, setFormulario] = useState(valoresIniciales);
+  const [obrasSociales, setObrasSociales] = useState([]);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    apiRequest('/obras-sociales', { signal: controller.signal })
+      .then((data) => {
+        const lista = Array.isArray(data) ? data : (data.obrasSociales || []);
+        setObrasSociales(lista);
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          console.error('Error al cargar obras sociales:', err);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
@@ -37,7 +57,9 @@ function FormularioPaciente({ onCreado }) {
       setMensaje('Paciente registrado correctamente');
       setFormulario(valoresIniciales);
 
-      onCreado(nuevoPaciente);
+      if (onCreado) {
+        onCreado(nuevoPaciente);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -102,6 +124,22 @@ function FormularioPaciente({ onCreado }) {
           onChange={manejarCambio}
           required
         />
+      </label>
+
+      <label>
+        Obra Social
+        <select
+          name="obraSocialId"
+          value={formulario.obraSocialId}
+          onChange={manejarCambio}
+        >
+          <option value="">Sin obra social (Particular)</option>
+          {obrasSociales.map((os) => (
+            <option key={os.id} value={os.id}>
+              {os.nombre}
+            </option>
+          ))}
+        </select>
       </label>
 
       <button type="submit" disabled={guardando}>
