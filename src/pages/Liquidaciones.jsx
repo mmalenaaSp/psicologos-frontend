@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from 'react';
 import { apiRequest } from '../services/api';
+import { obtenerMiPerfilProfesional } from '../services/perfilProfesionalService';
 import { Campo, Confirmacion, Mensaje } from './Turnos';
 
 export default function Liquidaciones() {
@@ -19,13 +20,19 @@ export default function Liquidaciones() {
 
     Promise.all([
       apiRequest(`/liquidaciones?${new URLSearchParams({ ...(obraSocialId ? { obraSocialId } : {}), ...(estado ? { estado } : {}) })}`, { signal: c.signal }),
-      apiRequest('/obras-sociales', { signal: c.signal }),
+      obtenerMiPerfilProfesional({ signal: c.signal }),
       apiRequest('/turnos?estado=RESERVADO', { signal: c.signal })
     ])
-      .then(([l, o, t]) => {
+      .then(([l, perfilDatos, t]) => {
         if (!c.signal.aborted) {
           setItems(l || []);
-          setObras(Array.isArray(o) ? o : (o.obrasSociales || []));
+
+          // Filtrar las obras sociales del catálogo global dejando solo las marcadas por el psicólogo
+          const idsSeleccionados = perfilDatos.perfil?.obrasSocialesIds || [];
+          const disponibles = perfilDatos.obrasSocialesDisponibles || [];
+          const asignadas = disponibles.filter(o => idsSeleccionados.includes(o.id));
+
+          setObras(asignadas);
           setSesiones(t || []);
         }
       })
@@ -112,9 +119,9 @@ export default function Liquidaciones() {
       <div className="turnos-filtros">
         <Campo titulo="Obra social">
           <select value={obraSocialId} onChange={e => { setObra(e.target.value); setImportes({}); }}>
-            <option value="">Todas</option>
+            <option value="">Todas mis obras sociales</option>
             {obras.map(o => (
-              <option key={o.id} value={o.id}>{o.nombre}</option>
+              <option key={o.id} value={o.id}>{o.nombre} ({o.codigo})</option>
             ))}
           </select>
         </Campo>
