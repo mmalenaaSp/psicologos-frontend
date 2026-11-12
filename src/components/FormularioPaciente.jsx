@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { crearPaciente } from '../services/pacienteService';
+import { obtenerMiPerfilProfesional } from '../services/perfilProfesionalService';
 
 function FormularioPaciente({ onCreado }) {
   const valoresIniciales = {
@@ -7,13 +8,43 @@ function FormularioPaciente({ onCreado }) {
     nombre: '',
     apellido: '',
     telefono: '',
-    fechaNacimiento: ''
+    fechaNacimiento: '',
+    obraSocialId: ''
   };
 
   const [formulario, setFormulario] = useState(valoresIniciales);
+  const [obrasSociales, setObrasSociales] = useState([]);
+  const [cargandoObras, setCargandoObras] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    // Obtenemos el perfil privado del psicólogo logueado para cargar sus obras sociales asignadas
+    obtenerMiPerfilProfesional({ signal: controller.signal })
+      .then((datos) => {
+        if (!controller.signal.aborted) {
+          const idsSeleccionados = datos.perfil?.obrasSocialesIds || [];
+          const disponibles = datos.obrasSocialesDisponibles || [];
+
+          // Filtramos el catálogo global según lo que el profesional atiende
+          const asignadas = disponibles.filter((os) => idsSeleccionados.includes(os.id));
+          setObrasSociales(asignadas);
+        }
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          console.error('Error al cargar obras sociales del perfil:', err);
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setCargandoObras(false);
+      });
+
+    return () => controller.abort();
+  }, []);
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
@@ -37,7 +68,9 @@ function FormularioPaciente({ onCreado }) {
       setMensaje('Paciente registrado correctamente');
       setFormulario(valoresIniciales);
 
-      onCreado(nuevoPaciente);
+      if (onCreado) {
+        onCreado(nuevoPaciente);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -102,6 +135,28 @@ function FormularioPaciente({ onCreado }) {
           onChange={manejarCambio}
           required
         />
+      </label>
+
+      <label>
+        Obra Social
+        <select
+          name="obraSocialId"
+          value={formulario.obraSocialId}
+          onChange={manejarCambio}
+          disabled={cargandoObras}
+        >
+          <option value="">Sin obra social (Particular)</option>
+          {obrasSociales.map((os) => (
+            <option key={os.id} value={os.id}>
+              {os.nombre} ({os.codigo})
+            </option>
+          ))}
+        </select>
+        {obrasSociales.length === 0 && !cargandoObras && (
+          <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '4px' }}>
+            No tenés obras sociales seleccionadas en tu perfil profesional.
+          </p>
+        )}
       </label>
 
       <button type="submit" disabled={guardando}>
